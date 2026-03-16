@@ -1,0 +1,43 @@
+# CampusOps Project Rules - Sprint 1
+
+## Core Architecture
+- **Microservice Design:** Authentication MUST be built as a standalone **microservice**. It must be independently deployable and communicate via REST API. Avoid coupling it directly to other modules (e.g., Planning or Payments).
+- **Kanban First:** Always check the `Kanban.md` board to understand the task context before generating code. **Must check and update Kanban boxes ([x]) immediately after completing a task.** Also, you are allowed to proactively fix code bugs or UX issues discovered while testing the application in the browser without waiting for separate instructions.
+- **Precision & Communication:** You MUST read the whole file carefully and ensure no contradictions happen before starting a task. You are free to ask the user whenever there is a conceptual contradiction to ensure alignment with the project vision.
+
+## Architectural Standards (Mandatory)
+- **Pattern:** Strictly follow the **Controller-Service-Repository-Model-DTO** pattern within the microservice.
+    - **Controller:** Handle HTTP requests (REST API endpoints).
+    - **Service:** Business logic and @Transactional boundaries.
+    - **Repository:** PostgreSQL/JPA data operations.
+    - **Model (Entity):** Database mapping (keep private).
+    - **DTO:** Use DTOs for ALL input/output. This is the sole mechanism for data contracts.
+
+## Technical Standards
+- **Database:** H2 (in-memory) with Spring Data JPA (Dedicated to the Auth microservice).
+- **Security:** - JWT authentication with refresh token rotation.
+    - Password hashing using `bcrypt`.
+    - SMTP for transactional emails.
+    - All secrets must be loaded from environment variables (no hardcoding).
+- **RBAC:** Enforce roles (Admin, Scolarité, Enseignant, Etudiant) on every protected endpoint.
+- **Validation:** Use Bean Validation (@Valid, @NotNull, etc.) on all DTOs.
+- **Documentation:** Every endpoint must be ready for Swagger/OpenAPI.
+
+## Frontend Standards
+- **Framework:** React with TypeScript (Vite).
+- **Styling:** Vanilla CSS with a strong focus on custom variables and premium aesthetics.
+- **Color Palette:**
+    - `Primary Blue`: `#004795` (derived from UEMF logo).
+    - `Accent Green`: `#39b54a` (derived from UEMF logo).
+    - `Surface`: High-contrast dark mode support or clean light surfaces with subtle depth.
+- **Layout:** Responsive Flex/Grid system with a consistent sidebar-based dashboard layout.
+- **Typography:** Modern sans-serif (Inter preferred) with clear hierarchy and consistent leading.
+
+## User Experience & Animations
+- **Smoothness:** Every interaction must feel fluid and responsive. Avoid "jumpy" UI.
+- **Animations (CSS/Framer Motion):**
+    - `Page Transitions`: Use subtle fade-in and slide-up effects (0.3s - 0.5s).
+    - `Hover Effects`: Micro-interactions on buttons and cards (subtle scale, shadow elevation, border-color shifts).
+    - `Loading States`: Custom animated skeletons or premium spinners following the color palette.
+- **Feedback:** Use Toast notifications for success/error feedback.
+- **Premium Feel:** Use soft shadows (`box-shadow`), slight `border-radius` (8px - 12px), and glassmorphism where appropriate.
