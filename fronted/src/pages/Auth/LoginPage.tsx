@@ -1,39 +1,40 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import api from '../../services/api';
-import './LoginPage.css';
-import { LogIn, Mail, Lock, Loader2, ShieldCheck, ArrowRight } from 'lucide-react';
-import logo from '../../assets/images/logo.png';
+import { useState }        from 'react'
+import { useNavigate }     from 'react-router-dom'
+import { useAuth }         from '../../hooks/useAuth'
+import { LogIn, Mail, Lock, Loader2, ShieldCheck, ArrowRight } from 'lucide-react'
+import logo                from '@/assets/images/logo.png'
+import './LoginPage.css'
+
+const getErrorMessage = (err: unknown): string => {
+  if (err && typeof err === 'object' && 'response' in err) {
+    const response = (err as { response?: { data?: { message?: string } } }).response
+    return response?.data?.message ?? 'Invalid email or password'
+  }
+  return 'Invalid email or password'
+}
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  const [email,     setEmail]     = useState('')
+  const [password,  setPassword]  = useState('')
+  const [error,     setError]     = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+
+  const { login } = useAuth()
+  const navigate  = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setIsLoading(true);
-
+    e.preventDefault()
+    setError('')
+    setIsLoading(true)
     try {
-      const response = await api.post('/auth/signin', { email, password });
-      const { token, refreshToken, ...userData } = response.data;
-      login(token, refreshToken, {
-        id: userData.id,
-        email: userData.email,
-        roles: userData.roles,
-      });
-      navigate('/');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Invalid email or password');
+      await login(email, password)
+      navigate('/')
+    } catch (err: unknown) {
+      setError(getErrorMessage(err))
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="login-page">
@@ -42,16 +43,15 @@ const LoginPage: React.FC = () => {
           <img src={logo} alt="CampusOps Logo" className="brand-logo" />
           <h2 className="brand-tagline">Integrated Campus Management</h2>
           <p className="brand-description">
-            Streamlining administrative workflows and academic experiences through a unified, secure platform.
+            Streamlining administrative workflows and academic experiences
+            through a unified, secure platform.
           </p>
           <div className="feature-badges">
             <div className="badge"><ShieldCheck size={16} /> Secure Access</div>
             <div className="badge"><ArrowRight size={16} /> Fast Processing</div>
           </div>
         </div>
-        <div className="brand-footer">
-          © 2026 CampusOps. All rights reserved.
-        </div>
+        <div className="brand-footer">© 2026 CampusOps. All rights reserved.</div>
       </div>
 
       <div className="login-form-side">
@@ -62,8 +62,10 @@ const LoginPage: React.FC = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
-            {error && <div className="error-message animate-fade-in">{error}</div>}
-            
+            {error && (
+              <div className="error-message animate-fade-in">{error}</div>
+            )}
+
             <div className="form-group">
               <label htmlFor="email">Email Address</label>
               <div className="input-group">
@@ -96,7 +98,11 @@ const LoginPage: React.FC = () => {
               </div>
             </div>
 
-            <button type="submit" className="login-button hover-lift" disabled={isLoading}>
+            <button
+              type="submit"
+              className="login-button hover-lift"
+              disabled={isLoading}
+            >
               {isLoading ? (
                 <Loader2 className="animate-spin" />
               ) : (
@@ -114,7 +120,7 @@ const LoginPage: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage
