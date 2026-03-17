@@ -1,6 +1,6 @@
 import {
   Users, BookOpen, ShieldAlert, CreditCard,
-  TrendingUp, ArrowUpRight, ArrowDownRight
+  ArrowUpRight, ArrowDownRight
 } from 'lucide-react'
 import './DashboardPage.css'
 
