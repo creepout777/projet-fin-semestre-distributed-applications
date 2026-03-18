@@ -1,0 +1,85 @@
+.avancement-page { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Summary strip ── */
+.av-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+.av-stat-card {
+  background: #fff;
+  border: 1px solid #e8edf3;
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex; align-items: center; gap: 14px;
+}
+.av-stat-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.av-stat-value { font-size: 22px; font-weight: 700; line-height: 1; }
+.av-stat-label { font-size: 11px; color: #8a99aa; margin-top: 3px; }
+
+/* ── Grid ── */
+.av-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+/* ── Module card ── */
+.av-card {
+  background: #fff;
+  border: 1px solid #e8edf3;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.av-card:hover { box-shadow: 0 4px 16px rgba(15,42,74,0.08); }
+.av-card-expanded { box-shadow: 0 4px 20px rgba(15,42,74,0.1); }
+
+.av-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px 0;
+  cursor: pointer;
+}
+.av-card-title-row { display: flex; align-items: center; gap: 12px; }
+.av-card-dot {
+  width: 36px; height: 36px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.av-card-module { font-size: 14px; font-weight: 700; color: #0f2a4a; }
+.av-card-meta   { font-size: 11px; color: #8a99aa; margin-top: 2px; }
+.av-card-pct    { font-size: 22px; font-weight: 700; }
+
+.av-card-body { padding: 14px 18px 16px; }
+
+/* ── Progress bars ── */
+.av-progress-track {
+  height: 7px; background: #f0f4f8;
+  border-radius: 4px; overflow: hidden;
+  margin-bottom: 4px;
+}
+.av-progress-track.av-progress-thin { height: 5px; margin-bottom: 0; }
+.av-progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+
+/* ── Expanded detail ── */
+.av-detail { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+.av-detail-row { display: flex; flex-direction: column; gap: 4px; }
+.av-detail-label {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: #4a6080; font-weight: 500;
+}
+.av-detail-count { font-weight: 600; color: #0f2a4a; }
+
+.av-toggle-btn {
+  margin-top: 14px;
+  background: none; border: none;
+  font-size: 11px; font-weight: 600;
+  cursor: pointer; padding: 0;
+  transition: opacity 0.15s;
+}
+.av-toggle-btn:hover { opacity: 0.75; }

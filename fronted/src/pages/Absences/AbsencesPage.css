@@ -1,0 +1,136 @@
+.absences-page { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Stat cards ── */
+.absences-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+.absence-stat-card {
+  background: #fff;
+  border: 1px solid #e8edf3;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.absence-stat-value { font-size: 28px; font-weight: 700; line-height: 1; }
+.absence-stat-label { font-size: 11px; color: #8a99aa; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ── Main card ── */
+.absences-card {
+  background: #fff;
+  border: 1px solid #e8edf3;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* ── Toolbar ── */
+.absences-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #f0f4f8;
+}
+.absences-search {
+  display: flex; align-items: center; gap: 8px;
+  background: #f4f7fb;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 7px 12px;
+  min-width: 260px;
+}
+.absences-search:focus-within { border-color: #1a56a0; background: #fff; }
+.absences-search-icon { color: #8a99aa; flex-shrink: 0; }
+.absences-search-input { border: none; background: none; outline: none; font-size: 13px; color: #0f2a4a; width: 100%; }
+.absences-search-input::placeholder { color: #aab4bf; }
+
+.absences-filters { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.filter-group {
+  display: flex; align-items: center; gap: 6px;
+  background: #f4f7fb; border: 1px solid #e2e8f0;
+  border-radius: 8px; padding: 6px 10px;
+  color: #8a99aa;
+}
+.filter-select {
+  border: none; background: none; outline: none;
+  font-size: 12px; color: #0f2a4a; cursor: pointer;
+}
+.statut-tabs { display: flex; gap: 4px; }
+.statut-tab {
+  font-size: 12px; font-weight: 500;
+  padding: 5px 12px; border-radius: 7px;
+  border: 1px solid #e2e8f0;
+  background: #fff; color: #8a99aa;
+  cursor: pointer; transition: all 0.15s;
+}
+.statut-tab:hover  { background: #f4f7fb; color: #0f2a4a; }
+.statut-tab.active { background: #1a56a0; color: #fff; border-color: #1a56a0; }
+.export-btn {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 500;
+  padding: 6px 12px;
+  border: 1px solid #e2e8f0; border-radius: 8px;
+  background: #fff; color: #4a6080;
+  cursor: pointer; transition: background 0.15s;
+}
+.export-btn:hover { background: #f4f7fb; }
+
+/* ── Table ── */
+.absences-table-wrap { overflow-x: auto; }
+.absences-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.absences-table thead th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 10px; font-weight: 600;
+  color: #8a99aa; text-transform: uppercase; letter-spacing: 0.05em;
+  background: #f8fafc;
+  border-bottom: 1px solid #e8edf3;
+  white-space: nowrap;
+}
+.absences-table tbody tr { border-bottom: 1px solid #f4f7fb; transition: background 0.12s; }
+.absences-table tbody tr:last-child { border-bottom: none; }
+.absences-table tbody tr:hover { background: #f8fafc; }
+.absences-table td { padding: 11px 16px; vertical-align: middle; }
+.td-name  { font-weight: 600; color: #0f2a4a; white-space: nowrap; }
+.td-muted { color: #8a99aa; white-space: nowrap; }
+.absences-empty { text-align: center; color: #8a99aa; padding: 40px 0 !important; font-size: 13px; }
+
+/* ── Statut badges ── */
+.statut-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600;
+  padding: 3px 9px; border-radius: 20px;
+  white-space: nowrap;
+}
+.statut-present { background: #e6f9f2; color: #0a7a52; }
+.statut-absent  { background: #fef0f0; color: #c53030; }
+.statut-retard  { background: #fff8e6; color: #9a6200; }
+
+.justif-badge {
+  font-size: 11px; font-weight: 600;
+  padding: 3px 9px; border-radius: 20px;
+}
+.justif-yes { background: #e6f9f2; color: #0a7a52; }
+.justif-no  { background: #fef0f0; color: #c53030; }
+
+/* ── Mark actions ── */
+.mark-actions { display: flex; gap: 5px; }
+.mark-btn {
+  width: 28px; height: 28px; border-radius: 7px;
+  border: 1px solid #e2e8f0; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #aab4bf;
+  transition: all 0.15s;
+}
+.mark-btn:hover          { border-color: #c8d5e3; color: #4a6080; }
+.mark-active-present     { background: #e6f9f2; border-color: #0f9d6e; color: #0a7a52; }
+.mark-active-retard      { background: #fff8e6; border-color: #d97706; color: #9a6200; }
+.mark-active-absent      { background: #fef0f0; border-color: #e53e3e; color: #c53030; }
+
+/* ── Footer ── */
+.absences-footer {
+  padding: 10px 18px;
+  border-top: 1px solid #f0f4f8;
+  background: #f8fafc;
+}
+.absences-count { font-size: 12px; color: #8a99aa; }

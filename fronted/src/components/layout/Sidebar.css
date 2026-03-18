@@ -1,0 +1,163 @@
+:root {
+  /* Brand Colors */
+  --uemf-navy: #00337c;
+  --uemf-green: #48b12b;
+  
+  /* Layout Colors */
+  --sb-bg: #ffffff;
+  --sb-border: #e2e8f0;
+  --sb-hover: #f1f5f9;
+  
+  /* Navigation Active States (UEMF Navy Theme) */
+  --sb-active-bg: #f0f7ff;    /* Very subtle blue tint */
+  --sb-active-text: #00337c;  /* UEMF Navy */
+  
+  /* Typography */
+  --sb-text-main: #0f172a;
+  --sb-text-muted: #64748b;
+  
+  /* Accent Colors */
+  --sb-accent: #00337c;       /* UEMF Navy as primary accent */
+  --sb-avatar-bg: #48b12b;    /* UEMF Green for the profile avatar */
+}
+
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background: var(--sb-bg);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--sb-border);
+  position: sticky;
+  top: 0;
+}
+
+/* ── Header ── */
+.sidebar-header {
+  padding: 24px 20px;
+}
+.sidebar-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sidebar-logo-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+.sidebar-brand-name {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--uemf-navy); /* Brand Navy for the title */
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.sidebar-brand-tag {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--uemf-green); /* Brand Green for the subtitle */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Nav ── */
+.sidebar-nav {
+  flex: 1;
+  padding: 0 12px;
+}
+.sidebar-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px;
+}
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--sb-text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  margin-bottom: 2px;
+}
+.sidebar-link:hover {
+  background: var(--sb-hover);
+  color: var(--sb-text-main);
+}
+.sidebar-link.active {
+  background: var(--sb-active-bg);
+  color: var(--sb-active-text);
+  font-weight: 600;
+}
+.sidebar-link.active .sidebar-link-icon {
+  color: var(--sb-active-text);
+}
+
+/* ── Footer ── */
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--sb-border);
+}
+.sidebar-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: var(--sb-hover);
+  border-radius: 12px;
+  border: 1px solid var(--sb-border);
+}
+.sidebar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--sb-avatar-bg); /* Using UEMF Green here */
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sidebar-user-details {
+  flex: 1;
+  min-width: 0;
+}
+.sidebar-user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sb-text-main);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-user-role {
+  font-size: 11px;
+  color: var(--sb-text-muted);
+  margin: 0;
+  text-transform: capitalize;
+}
+.sidebar-logout-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sidebar-logout-btn:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
