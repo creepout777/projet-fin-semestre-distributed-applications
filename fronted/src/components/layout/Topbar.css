@@ -172,3 +172,122 @@
 .topbar-chevron {
   color: var(--text-muted);
 }
+
+
+/* User wrapper (positions the dropdown) */
+.topbar-user-wrapper {
+  position: relative;
+}
+
+/* Active state for the pill */
+.topbar-user-pill.active {
+  background-color: var(--color-surface-hover, #f0f0f0);
+}
+
+/* Chevron rotation */
+.topbar-chevron {
+  transition: transform 0.2s ease;
+}
+.topbar-chevron.rotated {
+  transform: rotate(180deg);
+}
+
+/* Dropdown container */
+.topbar-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+  padding: 6px;
+  z-index: 100;
+  animation: dropdownFadeIn 0.15s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Dropdown header (user info) */
+.topbar-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px 10px;
+}
+
+.topbar-dropdown-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #4f46e5;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.topbar-dropdown-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.topbar-dropdown-email {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Divider */
+.topbar-dropdown-divider {
+  height: 1px;
+  background: #f3f4f6;
+  margin: 4px 0;
+}
+
+/* Menu list */
+.topbar-dropdown-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Dropdown item (shared) */
+.topbar-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.topbar-dropdown-item:hover {
+  background: #f9fafb;
+}
+
+/* Logout item */
+.topbar-dropdown-logout {
+  color: #ef4444;
+  margin-top: 2px;
+}
+
+.topbar-dropdown-logout:hover {
+  background: #fef2f2;
+}

@@ -7,6 +7,9 @@ import PlanningPage      from './pages/planning/PlanningPage'
 import AbsencesPage      from './pages/absences/AbsencesPage'
 import AvancementPage    from './pages/avancement/AvancementPage'
 import './App.css'
+import PaymentsPage from './pages/Paiments/PaymentsPage'
+import Utilisateurs from './pages/Utilisateurs/Utilisateurs'
+import Settings from './pages/Settings/Settings'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const token = useAuthStore(s => s.token)
@@ -34,6 +37,9 @@ function App() {
         <Route path="/planning"    element={<AppRoute element={<PlanningPage   />} />} />
         <Route path="/absences"    element={<AppRoute element={<AbsencesPage   />} />} />
         <Route path="/avancement"  element={<AppRoute element={<AvancementPage />} />} />
+        <Route path="/paiements"  element={<AppRoute element={<PaymentsPage />} />} />
+        <Route path="/users"  element={<AppRoute element={<Utilisateurs />} />} />
+        <Route path="/settings"  element={<AppRoute element={<Settings />} />} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

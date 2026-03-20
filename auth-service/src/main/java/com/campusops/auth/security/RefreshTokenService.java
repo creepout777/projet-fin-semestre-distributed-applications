@@ -1,10 +1,12 @@
 package com.campusops.auth.security;
 
 import com.campusops.auth.model.RefreshToken;
+import com.campusops.auth.model.User;
 import com.campusops.auth.repository.RefreshTokenRepository;
 import com.campusops.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,21 +29,20 @@ public class RefreshTokenService {
         return refreshTokenRepository.findByToken(token);
     }
 
+    @Transactional
     public RefreshToken createRefreshToken(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        refreshTokenRepository.deleteByUser(user);
+        refreshTokenRepository.flush();
+
         RefreshToken refreshToken = new RefreshToken();
-
-        // refreshToken.setUser(userRepository.findById(userId).get());
-
-        refreshToken.setUser(
-                userRepository.findById(userId)
-                        .orElseThrow(() -> new RuntimeException("User not found"))
-        );
-
+        refreshToken.setUser(user);
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
         refreshToken.setToken(UUID.randomUUID().toString());
 
-        refreshToken = refreshTokenRepository.save(refreshToken);
-        return refreshToken;
+        return refreshTokenRepository.save(refreshToken);
     }
 
     public RefreshToken verifyExpiration(RefreshToken token) {
@@ -54,6 +55,7 @@ public class RefreshTokenService {
     }
 
     @Transactional
+    @Modifying
     public int deleteByUserId(Long userId) {
         return refreshTokenRepository.deleteByUser(userRepository.findById(userId).get());
     }

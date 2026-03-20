@@ -16,10 +16,17 @@ const processQueue = (error: unknown, token: string | null) => {
   failedQueue = []
 }
 
+const PUBLIC_ROUTES = ['/auth/signin', '/auth/signup', '/auth/refreshtoken']
+
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const { token } = getAuthState()
-    if (token) config.headers.Authorization = `Bearer ${token}`
+    const isPublic = PUBLIC_ROUTES.some(route => config.url?.includes(route))
+
+    if (!isPublic) {
+      const { token } = getAuthState()
+      if (token) config.headers.Authorization = `Bearer ${token}`
+    }
+
     return config
   },
   (error) => Promise.reject(error)
