@@ -10,6 +10,7 @@ import com.campusops.auth.security.RefreshTokenService;
 import com.campusops.auth.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -72,7 +74,10 @@ public class AuthController {
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                    String token = jwtUtils.generateTokenFromUsername(user.getEmail());
+                    List<String> roles = user.getRoles().stream()
+                            .map(r -> "ROLE_" + r.name())
+                            .collect(Collectors.toList());
+                    String token = jwtUtils.generateTokenFromUsername(user.getEmail(), roles);
                     return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
                 })
                 .orElseThrow(() -> new RuntimeException("Refresh token is not in database!"));
@@ -103,6 +108,14 @@ public class AuthController {
             strRoles.forEach(role -> {
                 switch (role.toUpperCase()) {
                     case "ADMIN":
+                        // Only an existing ADMIN can assign the ADMIN role
+                        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                        boolean isAdmin = auth != null && auth.getAuthorities().stream()
+                                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+                        if (!isAdmin) {
+                            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                                    "Not authorized to assign ADMIN role");
+                        }
                         roles.add(Role.ADMIN);
                         break;
                     case "SCOLARITE":

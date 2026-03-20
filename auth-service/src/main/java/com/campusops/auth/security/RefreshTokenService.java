@@ -30,7 +30,13 @@ public class RefreshTokenService {
     public RefreshToken createRefreshToken(Long userId) {
         RefreshToken refreshToken = new RefreshToken();
 
-        refreshToken.setUser(userRepository.findById(userId).get());
+        // refreshToken.setUser(userRepository.findById(userId).get());
+
+        refreshToken.setUser(
+                userRepository.findById(userId)
+                        .orElseThrow(() -> new RuntimeException("User not found"))
+        );
+
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
         refreshToken.setToken(UUID.randomUUID().toString());
 

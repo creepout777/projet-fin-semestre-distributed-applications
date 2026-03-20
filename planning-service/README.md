@@ -4,23 +4,6 @@ Microservice responsible for managing the academic schedule (planning) within th
 
 ---
 
-## Stack
-
-- Java 17
-- Spring Boot 3.x
-- Spring Data JPA
-- PostgreSQL
-- Lombok
-- Maven
-
----
-
-## Running the service
-
-```bash
-./mvnw spring-boot:run
-```
-
 Default port: `8082`
 
 ---
