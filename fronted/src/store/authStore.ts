@@ -1,5 +1,5 @@
 import { create }  from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage } from 'zustand/middleware'
 import type { User } from '../types'
 
 interface AuthState {
@@ -18,9 +18,18 @@ export const useAuthStore = create<AuthState>()(
       refreshToken: null,
       setAuth: (user, token, refreshToken) =>
         set({ user, token, refreshToken }),
-      logout: () =>
-        set({ user: null, token: null, refreshToken: null }),
+
+      logout: () => {
+        // ✅ Wipe Zustand state
+        set({ user: null, token: null, refreshToken: null })
+        // ✅ Wipe localStorage fully — removes stale token & old role key
+        localStorage.removeItem('edu-auth')
+        localStorage.removeItem('role')
+      },
     }),
-    { name: 'edu-auth' }
+    {
+      name:    'edu-auth',
+      storage: createJSONStorage(() => localStorage),
+    }
   )
 )
