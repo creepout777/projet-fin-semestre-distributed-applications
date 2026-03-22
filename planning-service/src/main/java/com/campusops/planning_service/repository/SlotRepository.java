@@ -10,15 +10,18 @@ import java.util.List;
 @Repository
 public interface SlotRepository extends JpaRepository<Slot, Long> {
 
-    List<Slot> findByDate(LocalDate date);
-
+    // By date range (week view)
     List<Slot> findByDateBetween(LocalDate start, LocalDate end);
 
-    List<Slot> findByGroupe(String groupe);
-
-    List<Slot> findByEnseignant(String enseignant);
-
+    // By groupe (etudiant view)
     List<Slot> findByGroupeAndDateBetween(String groupe, LocalDate start, LocalDate end);
 
+    // By enseignant (teacher view)
     List<Slot> findByEnseignantAndDateBetween(String enseignant, LocalDate start, LocalDate end);
+
+    // By single date (day view)
+    List<Slot> findByDate(LocalDate date);
+
+    // By groupe + date (day view for student)
+    List<Slot> findByGroupeAndDate(String groupe, LocalDate date);
 }

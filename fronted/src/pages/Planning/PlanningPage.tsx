@@ -1,129 +1,156 @@
-// import React, { useState } from 'react';
-// import { 
-//   Plus, ChevronLeft, ChevronRight, Filter, 
-//   Calendar, Clock, MapPin, User, BookOpen, 
-//   Users, Info // <--- Added Users and Info here
-// } from 'lucide-react';
-// import './PlanningPage.css';
+import { useState, useEffect, useCallback } from 'react'
+import { Plus, Filter } from 'lucide-react'
+import { useAuthStore } from '../../store/authStore'
+import { planningService } from '../../services/planning/planning.service'
+import type { SlotDTO } from '../../services/planning/planning.types'
+import PlanningCalendar from './components/PlanningCalendar'
+import CreneauModal     from './components/CreneauModal'
+import './PlanningPage.css'
 
-import React, { useState } from 'react';
-import { 
-  Plus, ChevronLeft, ChevronRight, Filter, 
-  Clock, MapPin, User, BookOpen, 
-  Users, Info 
-} from 'lucide-react';
-import './PlanningPage.css';
+const getMonday = (d: Date) => {
+  const date = new Date(d)
+  const day  = date.getDay()
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1)
+  date.setDate(diff)
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+const toISO = (d: Date) => d.toISOString().split('T')[0]
 
 const PlanningPage: React.FC = () => {
-  const [view, setView] = useState<'day' | 'week'>('week');
+  const user = useAuthStore(s => s.user)
+  const canEdit = user?.role === 'admin' || user?.role === 'scolarite'
 
-  const sessions = [
-    { 
-      id: 1, 
-      module: 'Mathématiques Appliquées', 
-      teacher: 'Pr. Alaoui', 
-      room: 'Amphi A', 
-      group: 'G1', 
-      start: '08:30', 
-      end: '10:20', 
-      type: 'Cours' 
-    },
-    { 
-      id: 2, 
-      module: 'Développement Web', 
-      teacher: 'Pr. Benjelloun', 
-      room: 'Lab 4', 
-      group: 'G2', 
-      start: '10:30', 
-      end: '12:20', 
-      type: 'TP',
-      conflict: true 
+  const [view,       setView]       = useState<'day' | 'week'>('week')
+  const [weekStart,  setWeekStart]  = useState<Date>(getMonday(new Date()))
+  const [slots,      setSlots]      = useState<SlotDTO[]>([])
+  const [loading,    setLoading]    = useState(false)
+  const [modalOpen,  setModalOpen]  = useState(false)
+  const [editing,    setEditing]    = useState<SlotDTO | null>(null)
+  const [filterG,    setFilterG]    = useState('')
+  const [filterE,    setFilterE]    = useState('')
+
+  const fetchSlots = useCallback(async () => {
+    setLoading(true)
+    try {
+      const start = toISO(weekStart)
+      const end   = new Date(weekStart)
+      end.setDate(end.getDate() + (view === 'week' ? 5 : 0))
+      const endISO = toISO(end)
+
+      let data: SlotDTO[]
+      if (filterG)      data = await planningService.getByGroupe(filterG, start, endISO)
+      else if (filterE) data = await planningService.getByEnseignant(filterE, start, endISO)
+      else              data = await planningService.getWeek(start, endISO)
+
+      setSlots(data)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setLoading(false)
     }
-  ];
+  }, [weekStart, view, filterG, filterE])
+
+  useEffect(() => { fetchSlots() }, [fetchSlots])
+
+  const navigate = (dir: 1 | -1) => {
+    setWeekStart(prev => {
+      const d = new Date(prev)
+      d.setDate(d.getDate() + dir * (view === 'week' ? 7 : 1))
+      return d
+    })
+  }
+
+  const handleSave = async (dto: SlotDTO) => {
+    try {
+      if (dto.id) await planningService.update(dto.id, dto)
+      else        await planningService.create(dto)
+      setModalOpen(false)
+      setEditing(null)
+      fetchSlots()
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Supprimer ce créneau ?')) return
+    try {
+      await planningService.delete(id)
+      fetchSlots()
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const handleSlotClick = (slot: SlotDTO) => {
+    if (!canEdit) return
+    setEditing(slot)
+    setModalOpen(true)
+  }
+
+  // Unique values for filter dropdowns
+  const groupes     = [...new Set(slots.map(s => s.groupe))]
+  const enseignants = [...new Set(slots.map(s => s.enseignant))]
 
   return (
     <div className="planning-container">
+
       <header className="planning-header">
         <div className="planning-nav">
           <div className="view-switcher">
-            <button className={view === 'day' ? 'active' : ''} onClick={() => setView('day')}>Daily</button>
-            <button className={view === 'week' ? 'active' : ''} onClick={() => setView('week')}>Weekly</button>
-          </div>
-          <div className="date-picker">
-            <button className="icon-btn"><ChevronLeft size={18} /></button>
-            <span className="current-date">March 16 — 22, 2026</span>
-            <button className="icon-btn"><ChevronRight size={18} /></button>
+            <button className={view === 'day'  ? 'active' : ''} onClick={() => setView('day')}>Jour</button>
+            <button className={view === 'week' ? 'active' : ''} onClick={() => setView('week')}>Semaine</button>
           </div>
         </div>
 
         <div className="planning-actions">
           <div className="filter-group">
-            <Filter size={16} className="filter-icon" />
-            <select className="planning-select">
-              <option>All Teachers</option>
-              <option>Pr. Alaoui</option>
+            <Filter size={15} className="filter-icon" />
+            <select className="planning-select"
+              value={filterE} onChange={e => { setFilterE(e.target.value); setFilterG('') }}>
+              <option value="">Tous les enseignants</option>
+              {enseignants.map(e => <option key={e} value={e}>{e}</option>)}
             </select>
-            <select className="planning-select">
-              <option>All Groups</option>
-              <option>G1 (EI-1)</option>
+            <select className="planning-select"
+              value={filterG} onChange={e => { setFilterG(e.target.value); setFilterE('') }}>
+              <option value="">Tous les groupes</option>
+              {groupes.map(g => <option key={g} value={g}>{g}</option>)}
             </select>
           </div>
-          <button className="btn-primary">
-            <Plus size={18} />
-            <span>Create Slot</span>
-          </button>
+
+          {canEdit && (
+            <button className="btn-primary" onClick={() => { setEditing(null); setModalOpen(true) }}>
+              <Plus size={16} />
+              <span>Nouveau créneau</span>
+            </button>
+          )}
         </div>
       </header>
 
-      <div className="calendar-wrapper">
-        <div className="time-column">
-          <div className="time-slot-header" />
-          {['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'].map(t => (
-            <div key={t} className="time-label">{t}</div>
-          ))}
-        </div>
+      {loading && <div className="planning-loading">Chargement...</div>}
 
-        <div className="days-grid">
-          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="day-column">
-              <div className="day-header">{day}</div>
-              <div className="slots-container">
-                {day === 'Mon' && sessions.map(session => (
-<div 
-  key={session.id} 
-  className={`session-card ${session.conflict ? 'conflict' : ''}`}
-  style={{ top: `${(parseInt(session.start.split(':')[0]) - 8) * 60 + 20}px` }}
->
-  <div className="session-type">{session.type}</div>
-  
-  {/* Now using BookOpen */}
-  <h4 className="session-title">
-    <BookOpen size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-    {session.module}
-  </h4>
+      <PlanningCalendar
+        view={view}
+        slots={slots}
+        weekStart={weekStart}
+        onPrev={() => navigate(-1)}
+        onNext={() => navigate(1)}
+        onSlotClick={handleSlotClick}
+        canEdit={canEdit}
+        onDeleteSlot={handleDelete}
+      />
 
-  <div className="session-meta">
-    {/* Now using Clock */}
-    <span><Clock size={12} /> {session.start} — {session.end}</span>
-    <span><User size={12} /> {session.teacher}</span>
-    <span><MapPin size={12} /> {session.room}</span>
-    <span><Users size={12} /> {session.group}</span>
-  </div>
-
-  {session.conflict && (
-    <div className="conflict-badge">
-      <Info size={10} /> Room Overlap!
+      {modalOpen && (
+        <CreneauModal
+          initial={editing}
+          onSave={handleSave}
+          onClose={() => { setModalOpen(false); setEditing(null) }}
+        />
+      )}
     </div>
-  )}
-</div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
+  )
+}
 
-export default PlanningPage;
+export default PlanningPage

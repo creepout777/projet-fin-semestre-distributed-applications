@@ -8,10 +8,8 @@ import java.time.LocalTime;
 
 @Entity
 @Table(name = "slots")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 @Builder
 public class Slot {
 
@@ -39,4 +37,13 @@ public class Slot {
 
     @Column(nullable = false)
     private String salle;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SlotType type;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private Recurrence recurrence = Recurrence.ONCE;
 }
